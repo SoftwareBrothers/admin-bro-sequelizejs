@@ -3,6 +3,7 @@ import Sequelize from 'sequelize'
 import chai, { expect } from 'chai'
 import sinonChai from 'sinon-chai'
 
+import isPostgres from './utils/is-postgres'
 import Database from './database'
 import Resource from './resource'
 import db from '../models/index.js'
@@ -18,7 +19,7 @@ describe('Database', () => {
       firstName: Sequelize.STRING,
       lastName: Sequelize.STRING,
       email: Sequelize.STRING,
-      arrayed: Sequelize.ARRAY(Sequelize.STRING),
+      ...(isPostgres() ? { arrayed: Sequelize.ARRAY(Sequelize.STRING) } : {}),
     }, {})
   })
 

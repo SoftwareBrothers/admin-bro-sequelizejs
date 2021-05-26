@@ -1,6 +1,6 @@
 const GENDER_CHOICES = {
-  MALE: "male",
-  FEMALE: "female",
+  MALE: 'male',
+  FEMALE: 'female',
 }
 
 module.exports = {
@@ -26,9 +26,9 @@ module.exports = {
       email: {
         type: Sequelize.STRING,
       },
-      arrayed: {
-        type: Sequelize.ARRAY(Sequelize.STRING),
-      },
+      ...(process.env.DATABASE_DIALECT === 'postgres'
+        ? { arrayed: { type: Sequelize.ARRAY(Sequelize.STRING) } }
+        : {}),
       createdAt: {
         allowNull: false,
         type: Sequelize.DATE,
@@ -39,5 +39,5 @@ module.exports = {
       },
     })
   },
-  down: queryInterface => queryInterface.dropTable('Users'),
+  down: (queryInterface) => queryInterface.dropTable('Users'),
 }

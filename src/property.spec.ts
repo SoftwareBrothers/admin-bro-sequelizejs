@@ -1,6 +1,7 @@
 /* eslint-disable @typescript-eslint/no-var-requires */
 import chai, { expect } from 'chai'
 import sinonChai from 'sinon-chai'
+import isPostgres from './utils/is-postgres'
 import { AvailableTestModels } from './utils/available-test-models'
 
 import Property from './property'
@@ -22,10 +23,12 @@ describe('Property', () => {
       expect(property.isArray()).to.equal(false)
     })
 
-    it('returns true for array property', () => {
-      const property = new Property(getRawProperty('User', 'arrayed'))
-      expect(property.isArray()).to.equal(true)
-    })
+    if (isPostgres()) {
+      it('returns true for array property', () => {
+        const property = new Property(getRawProperty('User', 'arrayed'))
+        expect(property.isArray()).to.equal(true)
+      })
+    }
   })
 
   describe('#type', () => {
@@ -44,10 +47,12 @@ describe('Property', () => {
       expect(property.type()).to.equal('datetime')
     })
 
-    it('returns string when property is an array of strings', () => {
-      const property = new Property(getRawProperty('User', 'arrayed'))
-      expect(property.type()).to.equal('string')
-    })
+    if (isPostgres()) {
+      it('returns string when property is an array of strings', () => {
+        const property = new Property(getRawProperty('User', 'arrayed'))
+        expect(property.type()).to.equal('string')
+      })
+    }
   })
 
   describe('#availableValues', () => {

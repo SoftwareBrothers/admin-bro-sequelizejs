@@ -1,5 +1,3 @@
-
-
 module.exports = {
   up: (queryInterface, Sequelize) => queryInterface.createTable('Posts', {
     id: {

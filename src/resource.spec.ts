@@ -5,6 +5,7 @@ import chai, { expect } from 'chai'
 import sinonChai from 'sinon-chai'
 import sinon from 'sinon'
 
+import isPostgres from './utils/is-postgres'
 import Resource, { ModelType } from './resource'
 import Property from './property'
 
@@ -58,7 +59,8 @@ describe('Resource', function () {
 
   describe('#properties', () => {
     it('returns all properties', function () {
-      const length = 8 // there are 8 properties in the User model (5 regular + __v and _id)
+      // there are 7 or 8 (postgres array) properties in the User model (5 regular + __v and _id)
+      const length = isPostgres() ? 8 : 7
       expect(resource.properties()).to.have.lengthOf(length)
     })
   })
@@ -72,12 +74,14 @@ describe('Resource', function () {
       expect(resource.property('some.imagine.property')).to.be.null
     })
 
-    it('returns nested property for array field', function () {
-      const property = resource.property('arrayed.1')
+    if (isPostgres()) {
+      it('returns nested property for array field', function () {
+        const property = resource.property('arrayed.1')
 
-      expect(property).to.be.an.instanceOf(Property)
-      expect(property?.type()).to.equal('string')
-    })
+        expect(property).to.be.an.instanceOf(Property)
+        expect(property?.type()).to.equal('string')
+      })
+    }
   })
 
   describe('#findMany', () => {
@@ -214,7 +218,7 @@ describe('Resource', function () {
           userId: '',
         }
         this.recordParams = await resource.create(this.params)
-        expect(this.recordParams.userId).to.be.null
+        expect(this.recordParams.userId).to.be.oneOf([null, undefined])
       })
     })
   })

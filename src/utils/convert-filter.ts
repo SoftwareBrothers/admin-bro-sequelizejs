@@ -1,5 +1,5 @@
 import escape from 'escape-regexp'
-import {
+import Sequelize, {
   Op,
 } from 'sequelize'
 
@@ -36,11 +36,12 @@ const convertFilter = (filter) => {
         ...memo,
         [Op.and]: [
           ...(memo[Op.and] || []),
-          {
-            [property.name()]: {
-              [Op.iLike as unknown as string]: `%${escape(value)}%`,
+          Sequelize.where(
+            Sequelize.fn('lower', Sequelize.col(`${property.name()}`)),
+            {
+              [Op.like]: `%${escape(`${value}`.toLowerCase())}%`,
             },
-          },
+          ),
         ],
       }
     }
