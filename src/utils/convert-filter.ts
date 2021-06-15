@@ -1,36 +1,31 @@
-import escape from 'escape-regexp'
-import {
-  Op,
-} from 'sequelize'
+import escape from 'escape-regexp';
+import { Op } from 'sequelize';
 
 const convertFilter = (filter) => {
   if (!filter) {
-    return {}
+    return {};
   }
   return filter.reduce((memo, filterProperty) => {
-    const { property, value, path: filterPath } = filterProperty
+    const { property, value, path: filterPath } = filterProperty;
     // eslint-disable-next-line @typescript-eslint/no-unused-vars
-    const [_, index] = filterPath.split('.')
-    const isArray = typeof index !== 'undefined' && !Number.isNaN(Number(index))
-    const previousValue = memo[property.name()] || {}
+    const [_, index] = filterPath.split('.');
+    const isArray = typeof index !== 'undefined' && !Number.isNaN(Number(index));
+    const previousValue = memo[property.name()] || {};
     switch (property.type()) {
     case 'string': {
       if (property.sequelizePath.values) {
         return {
           [property.name()]: { [Op.eq]: `${escape(value)}` },
           ...memo,
-        }
+        };
       }
       if (isArray) {
         return {
           ...memo,
           [property.name()]: {
-            [Op.in]: [
-              ...(previousValue[Op.in] || []),
-              escape(value),
-            ],
+            [Op.in]: [...(previousValue[Op.in] || []), escape(value)],
           },
-        }
+        };
       }
       return {
         ...memo,
@@ -38,11 +33,11 @@ const convertFilter = (filter) => {
           ...(memo[Op.and] || []),
           {
             [property.name()]: {
-              [Op.iLike as unknown as string]: `%${escape(value)}%`,
+              [(Op.like as unknown) as string]: `%${escape(value)}%`,
             },
           },
         ],
-      }
+      };
     }
     case 'number': {
       if (!Number.isNaN(Number(value))) {
@@ -50,52 +45,46 @@ const convertFilter = (filter) => {
           return {
             ...memo,
             [property.name()]: {
-              [Op.in]: [
-                ...(previousValue[Op.in] || []),
-                Number(value),
-              ],
+              [Op.in]: [...(previousValue[Op.in] || []), Number(value)],
             },
-          }
+          };
         }
         return {
           [property.name()]: Number(value),
           ...memo,
-        }
+        };
       }
-      return memo
+      return memo;
     }
     case 'date':
     case 'datetime': {
       if (value.from || value.to) {
         return {
           [property.name()]: {
-            ...value.from && { [Op.gte]: value.from },
-            ...value.to && { [Op.lte]: value.to },
+            ...(value.from && { [Op.gte]: value.from }),
+            ...(value.to && { [Op.lte]: value.to }),
           },
           ...memo,
-        }
+        };
       }
-      break
+      break;
     }
     default:
-      break
+      break;
     }
     if (isArray) {
       return {
         ...memo,
         [property.name()]: {
-          [Op.in]: [
-            ...(previousValue[Op.in] || []),
-            value,
-          ],
+          [Op.in]: [...(previousValue[Op.in] || []), value],
         },
-      }
+      };
     }
     return {
       [property.name()]: value,
       ...memo,
-    }
-  }, {})
-}
+    };
+  }, {});
+};
 
-export default convertFilter
+export default convertFilter;

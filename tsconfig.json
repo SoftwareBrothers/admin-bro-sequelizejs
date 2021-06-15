@@ -1,22 +1,32 @@
 {
-    "compilerOptions": {
-      "outDir": "./build",
-      "target": "es2017",
-      "esModuleInterop": true,
-      "jsx": "preserve",
-      "declaration": true,
-      "declarationDir": "./types",
-      "strictNullChecks": true,
-      "strictPropertyInitialization": true,
-      "strictFunctionTypes": true,
-      "strictBindCallApply": true,
-      "noImplicitThis": true,
-      "moduleResolution": "node",
-      "module": "commonjs",
-      "baseUrl": "./src",
-      "skipLibCheck": true
-    },
-    "include": [
-      "./src/**/*"
-    ],
-  }
+  "compilerOptions": {
+    "jsx": "preserve",
+    "strictNullChecks": true,
+    "strictPropertyInitialization": true,
+    "strictFunctionTypes": true,
+    "strictBindCallApply": true,
+    "noImplicitThis": true,
+    "moduleResolution": "node",
+    "baseUrl": "./src",
+    "skipLibCheck": true,
+    "module": "commonjs",
+    "target": "ES2018",
+    "sourceMap": true,
+    "outDir": "lib",
+    "esModuleInterop": true,
+    "allowSyntheticDefaultImports": true,
+    "declaration": true,
+    "allowJs": true
+  },
+  "exclude": [
+    "node_modules",
+    "lib",
+    "spec",
+    "commitlint.config.js",
+    "**/*.spec.ts",
+    "models",
+    "migrations",
+    "config",
+    "example-app"
+  ]
+}

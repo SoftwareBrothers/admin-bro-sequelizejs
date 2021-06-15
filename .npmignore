@@ -2,4 +2,4 @@ example-app
 migrations
 models
 .github
-src
+./src/

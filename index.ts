@@ -1,4 +1,3 @@
-/* eslint-disable @typescript-eslint/no-var-requires */
 /**
  * @module @admin-bro/sequelize
  * @subcategory Adapters
@@ -79,7 +78,7 @@
  * @type {typeof BaseDatabase}
  * @static
  */
-const Database = require('./build/database').default
+import Database from './src/database';
 
 /**
  * Implementation of {@link BaseResource} for Sequelize Adapter
@@ -88,6 +87,11 @@ const Database = require('./build/database').default
  * @type {typeof BaseResource}
  * @static
  */
-const Resource = require('./build/resource').default
+import Resource from './src/resource';
 
-module.exports = { Database, Resource }
+export { default as Resource } from './src/resource';
+export { default as Database } from './src/database';
+
+module.exports = { Database, Resource };
+
+export default { Database, Resource };
