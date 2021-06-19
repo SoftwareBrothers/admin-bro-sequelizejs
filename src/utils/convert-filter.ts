@@ -64,6 +64,23 @@ const convertFilter = (filter) => {
       }
       return memo
     }
+    case 'boolean': {
+      if (isArray) {
+        return {
+          ...memo,
+          [property.name()]: {
+            [Op.in]: [
+              ...(previousValue[Op.in] || []),
+              value === 'true',
+            ],
+          },
+        }
+      }
+      return {
+        [property.name()]: value === 'true',
+        ...memo,
+      }
+    }
     case 'date':
     case 'datetime': {
       if (value.from || value.to) {
